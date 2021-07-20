@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const CommunityGrid = styled.main`
   width: 100%;
@@ -10,15 +10,14 @@ const CommunityGrid = styled.main`
   padding: 16px;
   .profileArea {
     display: none;
-    @media(min-width: 860px) {
+    @media (min-width: 860px) {
       display: block;
     }
   }
-  @media(min-width: 860px) {
+  @media (min-width: 860px) {
     max-width: 1110px;
     display: grid;
-    grid-template-areas: 
-      "profileArea comunidadeArea";
+    grid-template-areas: "profileArea comunidadeArea";
     grid-template-columns: 160px 2fr;
   }
 `;

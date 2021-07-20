@@ -86,7 +86,6 @@ export default function Home(props) {
   const [followers, setFollowers] = React.useState([]);
   const [numerosSegui, setNumerosSegui] = React.useState([]);
   const [following, setFollowing] = React.useState([]);
-  const [comunidadesUrl, setComunidadesUrl] = React.useState([]);
 
   React.useEffect(function () {
     fetch("https://api.github.com/users/lucasarlim/followers")
@@ -221,7 +220,7 @@ export default function Home(props) {
                 );
               })}
             </ul>
-            <hr/>
+            <hr />
             <p>
               <a className="boxLink" href={`/comunidades`}>
                 Ver todos

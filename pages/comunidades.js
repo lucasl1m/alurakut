@@ -16,24 +16,24 @@ import CommunityGrid from "../src/components/CommunityGrid";
 function ProfileSidebar(props) {
   return (
     <Box as="aside">
-        <img
-          src={`https://github.com/${props.githubUser}.png`}
-          alt="Foto do usuário"
-          style={{ borderRadius: "8px" }}
-        />
-        <hr />
-        <p>
-          <a
-            className="boxLink"
-            href={`https://github.com/${props.githubUser}`}
-            title="Nome do usuário"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            @{props.githubUser}
-          </a>
-        </p>
-        <hr />
+      <img
+        src={`https://github.com/${props.githubUser}.png`}
+        alt="Foto do usuário"
+        style={{ borderRadius: "8px" }}
+      />
+      <hr />
+      <p>
+        <a
+          className="boxLink"
+          href={`https://github.com/${props.githubUser}`}
+          title="Nome do usuário"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @{props.githubUser}
+        </a>
+      </p>
+      <hr />
 
       <AlurakutProfileSidebarMenuDefault />
     </Box>
