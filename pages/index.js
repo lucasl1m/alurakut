@@ -74,15 +74,6 @@ export default function Home(props) {
   const [comunidades, setComunidades] = React.useState([]);
 
   const githubUser = props.githubUser;
-  const favoritesPerson = [
-    "albertosilv",
-    "viniciuslins256",
-    "murilo-gruppi",
-    "davigsousa",
-    "magao02",
-    "liradriano",
-  ];
-
   const [followers, setFollowers] = React.useState([]);
   const [numerosSegui, setNumerosSegui] = React.useState([]);
   const [following, setFollowing] = React.useState([]);
@@ -123,7 +114,6 @@ export default function Home(props) {
       allCommunities {
         title
         imageUrl
-        paginaUrl
       }
     }`,
       }),

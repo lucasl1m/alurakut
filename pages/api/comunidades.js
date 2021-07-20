@@ -7,7 +7,7 @@ export default async function recebedorDeRequests(request, response) {
 
     // Validar os dados, antes de sair cadastrando
     const registroCriado = await client.items.create({
-      itemType: "48628479", // ID do Model de "Communities" criado pelo Dato
+      itemType: "979436", // ID do Model de "Communities" criado pelo Dato
       ...request.body,
     });
 
