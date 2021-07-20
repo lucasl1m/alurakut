@@ -71,13 +71,7 @@ function ProfileRelationsBox(props) {
 }
 
 export default function Home(props) {
-  const [comunidades, setComunidades] = React.useState([
-    {
-      id: "12802378123789378912789789123896123",
-      title: "CodeX Jr.",
-      image: "https://avatars.githubusercontent.com/u/63688134?s=200&v=4",
-    },
-  ]);
+  const [comunidades, setComunidades] = React.useState([]);
 
   const githubUser = props.githubUser;
   const favoritesPerson = [
