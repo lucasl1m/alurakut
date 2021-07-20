@@ -1,4 +1,6 @@
 import React from "react";
+import nookies from "nookies";
+import jwt from "jsonwebtoken";
 import styled from "styled-components";
 import MainGrid from "../src/components/MainGrid";
 import Box from "../src/components/Box";
@@ -8,19 +10,23 @@ import {
   AlurakutProfileSidebarMenuDefault,
   OrkutNostalgicIconSet,
 } from "../src/libs/AlurakutCommons";
+import IndexPage from "../src/components/IndexPage";
 
-function ProfileSidebar(prop) {
+function ProfileSidebar(propriedades) {
   return (
-    <Box>
+    <Box as="aside">
       <img
-        src={`https://github.com/${prop.githubUser}.png`}
+        src={`https://github.com/${propriedades.githubUser}.png`}
         style={{ borderRadius: "8px" }}
       />
-
       <hr />
+
       <p>
-        <a className="boxLink" href={`http:/:github.com/${prop.githubUser}`}>
-          @{prop.githubUser}
+        <a
+          className="boxLink"
+          href={`https://github.com/${propriedades.githubUser}`}
+        >
+          @{propriedades.githubUser}
         </a>
       </p>
       <hr />
@@ -34,25 +40,37 @@ function ProfileRelationsBox(props) {
   return (
     <ProfileRelationsBoxWrapper>
       <h2 className="smallTitle">
-        {props.title} ({props.items.length})
+        {props.title} ({props.total})
       </h2>
+
       <ul>
-        {/*followers.map((itemAtual) => {
-                 return (
-                   <li key={itemAtual.id}>
-                     <a href={`https://github.com/${itemAtual.login}.png`}>
-                       <img src={itemAtual.image} />
-                       <span>{itemAtual.title}</span>
-                     </a>
-                   </li>
-                 )
-               }) */}
+        {props.items.slice(0, 6).map((itemAtual) => {
+          return (
+            <li key={itemAtual.id}>
+              <a
+                href={itemAtual.html_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="Site do usuário"
+              >
+                <img src={itemAtual.avatar_url} alt="Avatar do usuário" />
+                <span>{itemAtual.login}</span>
+              </a>
+            </li>
+          );
+        })}
       </ul>
+      <hr />
+      <p>
+        <a className="boxLink" href={`/amigos`}>
+          Ver todos
+        </a>
+      </p>
     </ProfileRelationsBoxWrapper>
   );
 }
 
-export default function Home() {
+export default function Home(props) {
   const [comunidades, setComunidades] = React.useState([
     {
       id: "12802378123789378912789789123896123",
@@ -61,7 +79,7 @@ export default function Home() {
     },
   ]);
 
-  const githubUser = "lucasarlim";
+  const githubUser = props.githubUser;
   const favoritesPerson = [
     "albertosilv",
     "viniciuslins256",
@@ -72,19 +90,64 @@ export default function Home() {
   ];
 
   const [followers, setFollowers] = React.useState([]);
+  const [numerosSegui, setNumerosSegui] = React.useState([]);
+  const [following, setFollowing] = React.useState([]);
+  const [comunidadesUrl, setComunidadesUrl] = React.useState([]);
 
-  React.useEffect(function() {
+  React.useEffect(function () {
     fetch("https://api.github.com/users/lucasarlim/followers")
-    .then(function (responseServer) {
-      return responseServer.json();
+      .then(function (responseServer) {
+        return responseServer.json();
+      })
+      .then(function (responseCompleteServer) {
+        setFollowers(responseCompleteServer);
+      });
+
+    const urlNumeros = `https://api.github.com/users/${githubUser}`;
+    fetch(urlNumeros)
+      .then((resposta) => resposta.json())
+      .then((respostaJson) => setNumerosSegui(respostaJson));
+
+    const urlFollowing = `https://api.github.com/users/${githubUser}/following`;
+    fetch(urlFollowing)
+      .then(function (respostaDoServidor) {
+        return respostaDoServidor.json();
+      })
+      .then(function (respostaCompleta) {
+        setFollowing(respostaCompleta);
+      });
+
+    // API GraphQL
+    fetch("https://graphql.datocms.com/", {
+      method: "POST",
+      headers: {
+        Authorization: "33a9d444d909dcd4fe7f5471c0a1fb",
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({
+        query: `query {
+      allCommunities {
+        title
+        imageUrl
+        paginaUrl
+      }
+    }`,
+      }),
     })
-    .then(function (responseCompleteServer) {
-      setFollowers(responseCompleteServer);
-    });
-  }, [])
+      .then((response) => response.json())
+      .then((respostaCompleta) => {
+        const comunidadesVindasDoDato = respostaCompleta.data.allCommunities;
+        console.log(comunidadesVindasDoDato);
+        setComunidades(comunidadesVindasDoDato);
+      });
+  }, []);
+
+  console.log("seguidores antes do return", followers);
 
   return (
     <>
+      <IndexPage />
       <AlurakutMenu />
       <MainGrid>
         <div className="profileArea" style={{ gridArea: "profileArea" }}>
@@ -107,12 +170,23 @@ export default function Home() {
                 console.log("Campo: ", dadosDoForm.get("image"));
 
                 const comunidade = {
-                  id: new Date().toISOString(),
                   title: dadosDoForm.get("title"),
-                  image: dadosDoForm.get("image"),
+                  imageUrl: dadosDoForm.get("image"),
                 };
-                const comunidadesAtualizadas = [...comunidades, comunidade];
-                setComunidades(comunidadesAtualizadas);
+
+                fetch("/api/comunidades", {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify(comunidade),
+                }).then(async (response) => {
+                  const dados = await response.json();
+                  console.log(dados.registroCriado);
+                  const comunidade = dados.registroCriado;
+                  const comunidadesAtualizadas = [...comunidades, comunidade];
+                  setComunidades(comunidadesAtualizadas);
+                });
               }}
             >
               <div>
@@ -139,43 +213,63 @@ export default function Home() {
           className="profileRelationsArea"
           style={{ gridArea: "profileRelationsArea" }}
         >
-          <ProfileRelationsBox title="Seguidores" items={followers} />
-
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">Comunidades ({comunidades.length})</h2>
             <ul>
-              {comunidades.map((itemAtual) => {
+              {comunidades.slice(0, 6).map((itemAtual) => {
                 return (
                   <li key={itemAtual.id}>
-                    <a href={`/users/${itemAtual.title}`}>
-                      <img src={itemAtual.image} />
+                    <a href={`/communities/${itemAtual.id}`}>
+                      <img src={itemAtual.imageUrl} />
                       <span>{itemAtual.title}</span>
                     </a>
                   </li>
                 );
               })}
             </ul>
+            <hr/>
+            <p>
+              <a className="boxLink" href={`/comunidades`}>
+                Ver todos
+              </a>
+            </p>
           </ProfileRelationsBoxWrapper>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              Pessoas da comunidade ({favoritesPerson.length})
-            </h2>
 
-            <ul>
-              {favoritesPerson.map((itemAtual) => {
-                return (
-                  <li key={itemAtual}>
-                    <a href={`/users/${itemAtual}`} key={itemAtual}>
-                      <img src={`https://github.com/${itemAtual}.png`} />
-                      <span>{itemAtual}</span>
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
+          <ProfileRelationsBox
+            title="Seguidores"
+            items={followers}
+            total={numerosSegui.followers}
+          />
+
+          <ProfileRelationsBox
+            title="Seguindo"
+            items={following}
+            total={numerosSegui.following}
+          />
         </div>
       </MainGrid>
     </>
   );
+}
+
+export async function getServerSideProps(ctx) {
+  const cookies = nookies.get(ctx);
+  const token = cookies.USER_TOKEN;
+  const decodedToken = jwt.decode(token);
+  const githubUser = decodedToken?.githubUser;
+
+  if (!githubUser) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      githubUser,
+    },
+  };
 }
