@@ -6,6 +6,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "datocms-client": "^3.4.11",
     "graphql-request": "^3.4.0",
     "jsonwebtoken": "^8.5.1",
     "next": "latest",
