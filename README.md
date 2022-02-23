@@ -2,7 +2,7 @@
 <h4 align="justify">A Imersão React é gratuita e é voltada para profissionais, estudantes e para todo mundo que quer aprender mais sobre front-end. Nesta imersão vamos mergulhar no passado e dominar o futuro com o Alurakut! O projeto é uma versão do Orkut, criado com React, styled-components e next/js. </h4>
 
 
-## 💻 Linguagens e tecnologias utilizadas
+## ⚙️ Linguagens e tecnologias utilizadas
 
 
 <p align="left"> <a href="https://www.w3schools.com/css/" target="_blank"> 
@@ -26,11 +26,3 @@ Aproveita e deixa algum comentário sobre o projeto ou alguma sugestão!(será m
 
     - Rodar aplicativo
     $ npm run dev
-
-<a href="styled-components.md">Example app with styled-components</a>
-
-## 👩‍🏫/👨‍🏫 Instrutores
-
-- <a href="https://twitter.com/omariosouto">Mario Souto</a> <br>
-- <a href="https://twitter.com/juunegreiros">Juliana Negreiros</a> <br>
-- <a href="https://twitter.com/paulo_caelum">Paulo Silveira</a> <br>
